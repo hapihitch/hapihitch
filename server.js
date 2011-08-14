@@ -40,7 +40,7 @@ var checkinsocket = io.of('/checkin').on('connection', function(socket){
             
             console.log(err);
           } else {
-            exec("lpr /tmp/test.gif",null);
+            //exec("lpr /tmp/test.gif",null);
             console.log("The file was saved!");
           }
         });
@@ -51,7 +51,21 @@ var checkinsocket = io.of('/checkin').on('connection', function(socket){
 	});
 });
 
+var walllog = new Array();
+
 var wallsocket = io.of('/wall').on('connection', function(socket){ 	
+    for (var i in walllog)
+    {
+        if (walllog[i].type == "tweet")
+        {
+            socket.emit("post_tweet", walllog[i].obj);
+        }
+        else
+        {
+            socket.emit("post_checkin", walllog[i].obj);
+        }
+    }
+    
   	socket.on('disconnect', function(){
 		
 	});
@@ -59,11 +73,15 @@ var wallsocket = io.of('/wall').on('connection', function(socket){
 
 function sendNewCheckInToWall(obj) {
     //console.log(obj.name);
+    walllog.push({type:"checkin", obj: obj});
     wallsocket.emit("post_checkin", obj);
 }
 
+
+
 function sendNewTweetToWall(tweetObject) {
-    console.log(tweetObject);
+    //console.log(tweetObject);
+    walllog.push({type:"tweet", obj: tweetObject});
     wallsocket.emit("post_tweet", tweetObject);
 }
 
@@ -81,7 +99,7 @@ function TwitterPoll(hashtag, callback) {
 		//console.log("polling..");
 		rest.get("http://search.twitter.com/search.json", {
 			query:{
-				q:"#"+this.hashtag,
+				q:this.hashtag,
 				rpp:20,
 				since_id:this.last_id
 			}
@@ -101,9 +119,6 @@ function TwitterPoll(hashtag, callback) {
 				
 				if(i == 0)
 					_this.last_id = result.id;
-
-				
-				
 			}
 			
 		});

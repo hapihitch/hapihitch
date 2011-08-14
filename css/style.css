@@ -195,7 +195,7 @@ b i, b > i, i b, i > b {
 	height: 600px;
 	overflow: scroll;
 	text-align: left;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 	margin: 0 auto 40px auto;
 	border-bottom: 25px solid #395690;
 }

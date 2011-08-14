@@ -1,15 +1,33 @@
 $(function(){
+    var scrollToBottom = function ()
+    {
+        $("#log").animate({scrollTop: $("#log")[0].scrollHeight}, {duration: "slow", easing:"swing", queue: false});
+        postion[id] = $(id)[0].scrollHeight - value
+    }
     
     var wall = io.connect('http://10.0.1.92/wall');
-    wall.on('post_tweet', function (data) {
-        console.log(data);
-         $("#log").append("<div>" + data.text + "</div>");
+    wall.on('post_tweet', function (tweet) {
+        console.log(tweet);
+        var tweeturl = "http://www.twitter.com/"+tweet.from_user +"/status/"+tweet.id_str;
+        var adiv = $("<div></div>");
+        var a = $("<a href='"+tweeturl+"'><strong>" + tweet.from_user + "</strong>: " + tweet.text + "</a>");
+        adiv.append(a);
+        $("#log").append(adiv);
+        
+        //$("#log").append("<div><strong>" + tweet.from_user + "</strong>: " + tweet.text + "</div>");
+        $.embedly(tweeturl, {key: "a0d4690ac60a11e0b9a74040d3dc5c07", maxWidth: 640, maxHeight:480, autoplay:"true"} , function(data) {
+            adiv.html(data.html);
+            scrollToBottom();
+        });
+        scrollToBottom();
+        //
         //socket.emit('my other event', { my: 'data' });
     });
     
     wall.on('post_checkin', function (data) {
         console.log(data);
         $("#log").append("<div>" + data.name + " has arrived. <br/> <img src='data:image/gif;base64," + data.picData + "'/></div>");
+        scrollToBottom();
         //socket.emit('my other event', { my: 'data' });
     });
       
