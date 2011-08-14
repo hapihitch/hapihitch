@@ -4,12 +4,7 @@ $(function(){
         $("#log").animate({scrollTop: $("#log")[0].scrollHeight}, {duration: "slow", easing:"swing", queue: false});
     }
     
-<<<<<<< HEAD
-    var wall = io.connect('http://localhost/wall');
-    wall.on('post_tweet', function (data) {
-        console.log(data);
-         $("#log").append("<div>" + data.text + "</div>");
-=======
+
     var wall = io.connect('http://hapicheckin.com/wall');
     wall.on('post_tweet', function (tweet) {
         console.log(tweet);
@@ -26,8 +21,6 @@ $(function(){
             scrollToBottom();
         });
         scrollToBottom();
-        //
->>>>>>> 2c158e17f1d00837a8a958a4b4a0667853783d72
         //socket.emit('my other event', { my: 'data' });
     });
     
@@ -46,6 +39,10 @@ $(function(){
              $("#log").append($(block))
         }
         
+        console.log(data);
+    });
+    
+    wall.on('post_rapleaf', function (data) {
         console.log(data);
     });
     /*  

@@ -32,9 +32,9 @@ app.listen(80);
 var io = require('socket.io').listen(app); 
 io.set('log level', 1);
 
-io.set('transports', [                     // enable all transports (optional if you want flashsocket)
+/*io.set('transports', [                     // enable all transports (optional if you want flashsocket)
   'xhr-polling'
-]);
+]);*/
 
 var checkinsocket = io.of('/checkin').on('connection', function(socket){ 
 	socket.on('new checkin', function(obj){ 
@@ -51,6 +51,15 @@ var checkinsocket = io.of('/checkin').on('connection', function(socket){
 	            }}).on('complete', function(data) {
 	                sendKloutInToWall(data);
                 });
+            
+            
+        	/*
+        	rest.get("https://personalize.rapleaf.com/v4/dr?email="+obj.email+"&api_key=9e9da3ba0ce49e113b974e48870aa4c8", {}).on('complete', function(data) {
+        	    console.log("User found");
+                sendRapLeafToWall(data);
+        	});
+        	*/
+            	
 	    }
 	    
 		var buff = new Buffer(obj.picData, "base64");
@@ -76,18 +85,7 @@ var walllog = new Array();
 var wallsocket = io.of('/wall').on('connection', function(socket){ 	
     for (var i in walllog)
     {
-        if (walllog[i].type == "tweet")
-        {
-            socket.emit("post_tweet", walllog[i].obj);
-        }
-        else if  (walllog[i].type == "klout")
-        {
-            socket.emit("post_klout", walllog[i].obj);
-        }
-        else
-        {
-            socket.emit("post_checkin", walllog[i].obj);
-        }
+        socket.emit("post_"+walllog[i].type, walllog[i].obj);
     }
     
   	socket.on('disconnect', function(){
@@ -97,26 +95,13 @@ var wallsocket = io.of('/wall').on('connection', function(socket){
 
 
 function sendNewCheckInToWall(obj) {
-	console.log("making rap lef request");
-    var rapLeafRequest = new RapLeaf(obj.name, obj.email).onFound(function(data) {
-		console.log("User found");
-		obj = mergeObj(obj, data);
-		wallsocket.emit("post_checkin", obj);
-	});
-    
+    walllog.push({type:"checkin", obj: obj});
+	wallsocket.emit("post_checkin", obj);
 }
 
-//merges first with second object completely. (replaces first keys completely)
-function mergeObj(first, second) {
-	var final = {};
-	for (var key1 in first) { final[key1] = first[key1]; }
-	for (var key2 in second) { final[key2] = second[key2]; }
-	return final;
-}
-function sendNewTweetToWall(tweetObject) {
-    //console.log(obj.name);
-    walllog.push({type:"checkin", obj: obj});
-    wallsocket.emit("post_checkin", obj);
+function sendRapLeafToWall(obj) {
+    walllog.push({type:"rapleaf", obj: obj});
+	wallsocket.emit("post_rapleaf", obj);
 }
 
 function sendKloutInToWall(obj) {
@@ -134,7 +119,7 @@ function sendNewTweetToWall(tweetObject) {
 var twitterPoll = new TwitterPoll("hapihack", sendNewTweetToWall);
 
 //rapleaf lookup service
-function RapLeaf(name, email) {
+function RapLeaf(name, email, callback) {
 	//split name into two parts
 	var parts = name.split(" ");
 	if(parts.length != 2) return;
@@ -145,17 +130,15 @@ function RapLeaf(name, email) {
 	this.email = email;
 	this.callback = null;
 	this.api_key = "9e9da3ba0ce49e113b974e48870aa4c8";
-	this.onFound = function(callback) {
-		this.callback = callback;
-	}
+	this.callback = callback;
 	
 	var self = this;
 	console.log("making request with: "+this.fname+" "+this.lname+" "+this.email+" "+this.api_key);
 	//find the user
-	rest.get("https://personalize.rapleaf.com/v4/dr", {
+	rest.get("http://personalize.rapleaf.com/v4/dr", {
 		query:{
-			first:self.fname,
-			last:self.lname,
+			//first:self.fname,
+			//last:self.lname,
 			email:self.email,
 			api_key:self.api_key
 		}
@@ -184,7 +167,7 @@ function TwitterPoll(hashtag, callback) {
 		}).on('complete', function(data) {
 			//grab tweets
 			var results = data.results;
-			console.log("Num tweets: "+results.length);
+			//console.log("Num tweets: "+results.length);
 			
 			
 			
