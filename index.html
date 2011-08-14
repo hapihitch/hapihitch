@@ -17,6 +17,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 	<link rel="stylesheet" href="css/style.css?v=2">
+	
 </head>
 <body>
 	<div id="container">
@@ -27,14 +28,20 @@
 			
 			<div id="log_container">
 				<strong>LIVE EVENT WALL:</strong>
-				<div id="log">
-				
+				<div id="chat_pane">
+					<!-- Dynamic chat box will be inserted -->
 				</div>
+				<div id="log">
+					<!-- Logs will be posted here -->
+				</div>
+				
 			</div>
+			
+			
 		</div>
 
 		<footer>
-			<p>Created by Zac Bowling and Sam Stewart in a couple of hours.</p>
+			<p style="text-align: right;">Created by Zac Bowling and Sam Stewart in a couple of hours.</p>
 		
 		</footer>
 	</div>
@@ -46,7 +53,14 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/plugins.js"></script>
 	<script src="js/script.js"></script>
-
+	<script type="text/javascript"> 
+			//display chat..
+			var envoSn=29; 
+			var envoOptions={groups: [{id : "developers", name: "developers"}],
+			chats : [{id : "hapichat", name : "HapiChat", divID: "chat_pane"}]};
+			var envProtoType = (("https:" == document.location.protocol) ? "https://" : "http://");
+			document.write(unescape("%3Cscript src='" + envProtoType + "d.envolve.com/env.nocache.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
 	<!--[if lt IE 7 ]>
 	<script src="js/libs/dd_belatedpng.js"></script>
 	<script> DD_belatedPNG.fix('img, .png_bg');</script>
