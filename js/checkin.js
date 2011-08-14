@@ -1,6 +1,5 @@
 $(function() {
-    
-    var wall = io.connect('http://localhost/checkin');
+    var wall = io.connect('http://hapicheckin.com/checkin');
 	// ---------------------------------------------------------------------------------
 	// OpenTok vars and functions
 	// ---------------------------------------------------------------------------------
@@ -35,7 +34,7 @@ $(function() {
 			}
 		}
 	}
-
+    
 	// ---------------------------------------------------------------------------------
 	// UI handlers
 	// ---------------------------------------------------------------------------------	
@@ -49,7 +48,11 @@ $(function() {
             picData:imgData,
             twitterName:$("#formtwitter").val()
         });
-
+        
+        /*imgur.getImageURL(imgData, function (link) {
+            
+        });*/
+        
 		return false;
 	});
 });

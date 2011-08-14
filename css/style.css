@@ -181,7 +181,7 @@ b i, b > i, i b, i > b {
 
 #log_container strong {
 	font-size: 24px;
-	text-transform: uppercase;	
+	/*text-transform: uppercase;*/
 }
 
 #log {
@@ -192,12 +192,14 @@ b i, b > i, i b, i > b {
 	height: 600px;
 	overflow: scroll;
 	text-align: left;
-	float: left;
-	text-transform: uppercase;
-	padding-top: auto;
+	/*text-transform: uppercase;*/
+	margin: 0 auto 40px auto;
+	/*text-transform: uppercase;*/
+	/*padding-top: auto;
 	padding-bottom: auto;
 	margin-left: 60pt;
-	margin-bottom: 40px;
+	margin-bottom: 40px;*/
+	
 	border-bottom: 25px solid #395690;
 }
 #chat_pane {
