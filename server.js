@@ -14,7 +14,7 @@ app.use(express.bodyParser());
 app.use(app.router);
 
 app.get('/checkin', function(req, res){
-	res.sendfile("campaign.html");
+	res.sendfile("checkin.html");
 });
 
 app.get('/', function(req, res){
@@ -29,8 +29,8 @@ app.listen(8000);
 var io = require('socket.io').listen(app); 
 
 var checkinsocket = io.of('/checkin').on('connection', function(socket){ 
-	socket.on('new checkin', function(name,email,pic,twitter){ 
-		sendNewCheckInToWall(name,email,pic,twitter);
+	socket.on('new checkin', function(obj){ 
+		sendNewCheckInToWall(obj);
 	});
 	
   	socket.on('disconnect', function(){
@@ -44,12 +44,13 @@ var wallsocket = io.of('/wall').on('connection', function(socket){
 	});
 });
 
-function sendNewCheckInToWall(name,email,pic,twitter) {
-    wallsocket.emit("new checkin", {name:name,email:email,picData:pic,twitterName:twitter});
+function sendNewCheckInToWall(obj) {
+    console.log(obj.name);
+    wallsocket.emit("post_checkin", obj);
 }
 
 function sendNewTweetToWall(tweetObject) {
-    wallsocket.emit("new tweet", tweet);
+    wallsocket.emit("post_tweet", tweet);
 }
 
 
