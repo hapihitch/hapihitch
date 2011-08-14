@@ -3,12 +3,13 @@ $(function(){
     var wall = io.connect('http://localhost/wall');
     wall.on('post_tweet', function (data) {
         console.log(data);
+         $("#log").append("<div>" + data.text + "</div>");
         //socket.emit('my other event', { my: 'data' });
     });
     
     wall.on('post_checkin', function (data) {
         console.log(data);
-        $("#log").append("<div>" + data.name + " + <img src='data:image/gif;base64," + data.picData + "'/></div>");
+        $("#log").append("<div>" + data.name + " has arrived. <br/> <img src='data:image/gif;base64," + data.picData + "'/></div>");
         //socket.emit('my other event', { my: 'data' });
     });
       
