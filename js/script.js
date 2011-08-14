@@ -1,6 +1,6 @@
 $(function(){
     
-    var wall = io.connect('http://localhost/wall');
+    var wall = io.connect('http://10.0.1.92/wall');
     wall.on('post_tweet', function (data) {
         console.log(data);
          $("#log").append("<div>" + data.text + "</div>");
