@@ -1,6 +1,6 @@
 
 var opts = {};
-var io = require('socket.io'); 
+
 opts.port = 20200;
 
 var rest = require('restler');
@@ -13,64 +13,45 @@ var callcount = 0;
 app.use(express.bodyParser());
 app.use(app.router);
 
-app.get("/phone/count", function(req, res){
-	//res.sendfile("phone.html");
-	res.send('Phone calls ' + callcount);
-});
-
-app.get('/', function(req, res){
-	res.sendfile("wall.html");
-	//res.send('Phone calls ' + callcount);
-});
-
 app.get('/checkin', function(req, res){
 	res.sendfile("campaign.html");
-	//res.send('Phone calls ' + callcount);
 });
-
-
-
 
 app.get('/', function(req, res){
 	res.sendfile("index.html");
-	//res.send('Phone calls ' + callcount);
 });
 
 app.use(express.static(__dirname + '/'));
 
 var clientCount = 0;
 
-
-function sendData(message){
-	var obj = {};
-	obj.calls = callcount;
-	obj.clients = clientCount; 
-	if (message)
-	{
-		obj.msg = message;
-	}
-	console.log("message");
-	console.log(obj)
-	socket.broadcast(obj);
-}
-
-
-
 app.listen(8000);
+var io = require('socket.io').listen(app); 
 
-socket = io.listen(app); 
-//socket.set('transports', ['jsonp-polling']);
-
-socket.sockets.on('connection', function(client){ 
-	sendData("");
-	client.on('message', function(msg){ 
-		//sendData(); 
-		console.log(msg);
+var checkinsocket = io.of('/checkin').on('connection', function(socket){ 
+	socket.on('new checkin', function(name,email,pic,twitter){ 
+		sendNewCheckInToWall(name,email,pic,twitter);
 	});
-  	client.on('disconnect', function(){
+	
+  	socket.on('disconnect', function(){
 		
 	});
 });
+
+var wallsocket = io.of('/wall').on('connection', function(socket){ 	
+  	socket.on('disconnect', function(){
+		
+	});
+});
+
+function sendNewCheckInToWall(name,email,pic,twitter) {
+    wallsocket.emit("new checkin", {name:name,email:email,picData:pic,twitterName:twitter});
+}
+
+function sendNewTweetToWall(tweetObject) {
+    wallsocket.emit("new tweet", tweet);
+}
+
 
 
 

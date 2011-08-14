@@ -1,9 +1,14 @@
 $(function(){
     
-    var socket = io.connect('http://localhost');
-    socket.on('news', function (data) {
+    var wall = io.connect('http://localhost/wall');
+    wall.on('new tweet', function (data) {
         console.log(data);
-        socket.emit('my other event', { my: 'data' });
+        //socket.emit('my other event', { my: 'data' });
+    });
+    
+    wall.on('new checkin', function (data) {
+        console.log(data);
+        //socket.emit('my other event', { my: 'data' });
     });
       
     /*  
