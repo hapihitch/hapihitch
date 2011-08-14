@@ -35,7 +35,7 @@ $(function() {
 			}
 		}
 	}
-
+    
 	// ---------------------------------------------------------------------------------
 	// UI handlers
 	// ---------------------------------------------------------------------------------	
@@ -49,7 +49,11 @@ $(function() {
             picData:imgData,
             twitterName:$("#formtwitter").val()
         });
-
+        
+        /*imgur.getImageURL(imgData, function (link) {
+            
+        });*/
+        
 		return false;
 	});
 });

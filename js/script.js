@@ -2,7 +2,6 @@ $(function(){
     var scrollToBottom = function ()
     {
         $("#log").animate({scrollTop: $("#log")[0].scrollHeight}, {duration: "slow", easing:"swing", queue: false});
-        postion[id] = $(id)[0].scrollHeight - value
     }
     
     var wall = io.connect('http://hapicheckin.com/wall');
@@ -12,11 +11,12 @@ $(function(){
         var adiv = $("<div id='" +tweet.id_str + "'></div>");
         var a = $("<a href='"+tweeturl+"'><strong>" + tweet.from_user + "</strong>: " + tweet.text + "</a>");
         adiv.append(a);
+        
         $("#log").append(adiv);
         
         //$("#log").append("<div><strong>" + tweet.from_user + "</strong>: " + tweet.text + "</div>");
         $.embedly(tweeturl, {key: "a0d4690ac60a11e0b9a74040d3dc5c07", maxWidth: 640, maxHeight:480, autoplay:"true"} , function(data) {
-            $("#"+tweet.id_str).html(data.html);
+            adiv.html(data.html);
             scrollToBottom();
         });
         scrollToBottom();
@@ -30,7 +30,17 @@ $(function(){
         scrollToBottom();
         //socket.emit('my other event', { my: 'data' });
     });
-      
+
+    wall.on('post_klout', function (data) {
+        
+        if ("users" in data)
+        {
+            var block = '<iframe src="http://widgets.klout.com/badge/' + data.users[0].twitter_screen_name + '" style="border:0" scrolling="no" allowTransparency="true" frameBorder="0" width="200px" height="98px"></iframe>';
+             $("#log").append($(block))
+        }
+        
+        console.log(data);
+    });
     /*  
 	 var socket = new io.Socket(); 
 	 socket.connect();
