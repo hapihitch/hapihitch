@@ -1,4 +1,12 @@
 $(function(){
+    
+    var socket = io.connect('http://localhost');
+    socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+    });
+      
+    /*  
 	 var socket = new io.Socket(); 
 	 socket.connect();
 	 socket.on('connect', function(){ 
@@ -18,4 +26,5 @@ $(function(){
 	 socket.on('disconnect', function(){
 		//$("#log").append("<p><strong>disconnected from the server</strong></p>");
 	 });
+	 */
 });
