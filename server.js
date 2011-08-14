@@ -28,8 +28,12 @@ app.use(express.static(__dirname + '/'));
 
 var clientCount = 0;
 
-app.listen(8000);
+app.listen(80);
 var io = require('socket.io').listen(app); 
+
+io.set('transports', [                     // enable all transports (optional if you want flashsocket)
+  'xhr-polling'
+]);
 
 var checkinsocket = io.of('/checkin').on('connection', function(socket){ 
 	socket.on('new checkin', function(obj){ 

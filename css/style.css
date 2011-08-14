@@ -174,17 +174,14 @@ b i, b > i, i b, i > b {
 	color: #eee;
 	padding: 0 auto 0 auto;
 	background: #395690;
+	height: 700px;
 	-webkit-box-shadow: 0 10px 30px #036 inset;
 }
 
-#main p {
-	max-width: 1024px;
-	margin: auto;
-}
 
 #log_container strong {
 	font-size: 24px;
-	text-transform: uppercase;	
+	/*text-transform: uppercase;*/
 }
 
 #log {
@@ -197,9 +194,23 @@ b i, b > i, i b, i > b {
 	text-align: left;
 	/*text-transform: uppercase;*/
 	margin: 0 auto 40px auto;
+	/*text-transform: uppercase;*/
+	/*padding-top: auto;
+	padding-bottom: auto;
+	margin-left: 60pt;
+	margin-bottom: 40px;*/
+	
 	border-bottom: 25px solid #395690;
 }
-
+#chat_pane {
+	font-size: 18px;
+	padding: 20px;
+	max-width: 400px;
+	float: left;
+	margin-left: 20pt;
+	height: 350px;
+	text-align: left;
+}
 #log div {
 	margin: 0 0 10px 0;
 }
@@ -224,6 +235,7 @@ b i, b > i, i b, i > b {
 
 footer {
 	max-width: 1024px;
+	background: pink;
 	margin: 0 auto 0 auto;
 }
 

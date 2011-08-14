@@ -5,18 +5,18 @@ $(function(){
         postion[id] = $(id)[0].scrollHeight - value
     }
     
-    var wall = io.connect('http://10.0.1.92/wall');
+    var wall = io.connect('http://hapicheckin.com/wall');
     wall.on('post_tweet', function (tweet) {
         console.log(tweet);
         var tweeturl = "http://www.twitter.com/"+tweet.from_user +"/status/"+tweet.id_str;
-        var adiv = $("<div></div>");
+        var adiv = $("<div id='" +tweet.id_str + "'></div>");
         var a = $("<a href='"+tweeturl+"'><strong>" + tweet.from_user + "</strong>: " + tweet.text + "</a>");
         adiv.append(a);
         $("#log").append(adiv);
         
         //$("#log").append("<div><strong>" + tweet.from_user + "</strong>: " + tweet.text + "</div>");
         $.embedly(tweeturl, {key: "a0d4690ac60a11e0b9a74040d3dc5c07", maxWidth: 640, maxHeight:480, autoplay:"true"} , function(data) {
-            adiv.html(data.html);
+            $("#"+tweet.id_str).html(data.html);
             scrollToBottom();
         });
         scrollToBottom();

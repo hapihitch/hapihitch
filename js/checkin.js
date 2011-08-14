@@ -1,6 +1,6 @@
 $(function() {
     
-    var wall = io.connect('http://10.0.1.92/checkin');
+    var wall = io.connect('http://hapicheckin.com/checkin');
 	// ---------------------------------------------------------------------------------
 	// OpenTok vars and functions
 	// ---------------------------------------------------------------------------------
