@@ -30,9 +30,11 @@ var clientCount = 0;
 
 app.listen(8000);
 var io = require('socket.io').listen(app); 
+io.set('log level', 1);
 
 var checkinsocket = io.of('/checkin').on('connection', function(socket){ 
 	socket.on('new checkin', function(obj){ 
+		console.log("Checkin!");
 		sendNewCheckInToWall(obj);
 		var buff = new Buffer(obj.picData, "base64");
 		fs.writeFile("/tmp/test.gif", buff, "binary", function(err) {
@@ -58,23 +60,66 @@ var wallsocket = io.of('/wall').on('connection', function(socket){
 });
 
 function sendNewCheckInToWall(obj) {
-    //console.log(obj.name);
-    wallsocket.emit("post_checkin", obj);
+	console.log("making rap lef request");
+    var rapLeafRequest = new RapLeaf(obj.name, obj.email).onFound(function(data) {
+		console.log("User found");
+		obj = mergeObj(obj, data);
+		wallsocket.emit("post_checkin", obj);
+	});
+    
 }
 
+//merges first with second object completely. (replaces first keys completely)
+function mergeObj(first, second) {
+	var final = {};
+	for (var key1 in first) { final[key1] = first[key1]; }
+	for (var key2 in second) { final[key2] = second[key2]; }
+	return final;
+}
 function sendNewTweetToWall(tweetObject) {
-    console.log(tweetObject);
     wallsocket.emit("post_tweet", tweetObject);
 }
 
 var twitterPoll = new TwitterPoll("hapihack", sendNewTweetToWall);
 
+//rapleaf lookup service
+function RapLeaf(name, email) {
+	//split name into two parts
+	var parts = name.split(" ");
+	if(parts.length != 2) return;
+	
+	console.log("parsed name into names: "+parts[0]);
+	this.fname = parts[0];
+	this.lname = parts[1];
+	this.email = email;
+	this.callback = null;
+	this.api_key = "9e9da3ba0ce49e113b974e48870aa4c8";
+	this.onFound = function(callback) {
+		this.callback = callback;
+	}
+	
+	var self = this;
+	console.log("making request with: "+this.fname+" "+this.lname+" "+this.email+" "+this.api_key);
+	//find the user
+	rest.get("https://personalize.rapleaf.com/v4/dr", {
+		query:{
+			first:self.fname,
+			last:self.lname,
+			email:self.email,
+			api_key:self.api_key
+		}
+	}).on('complete', function(data) {
+		console.log("rapleaf data: "+data);
+		if(this.callback != null)
+			this.callback(data);
+	});
+}
 //twitter polling service
 function TwitterPoll(hashtag, callback) {
 	this.hashtag = hashtag;
 	this.last_id = 0;
 	this.callback = callback;
-	this.poll_interval = 2000;
+	this.poll_interval = 5000;
 	
 	var _this = this;
 	this.poll = function() {
@@ -118,7 +163,7 @@ function TwitterPoll(hashtag, callback) {
 	var _this = this;
 	this.interval_id = setInterval(function(t) {
 		_this.poll();
-	}, 2000);
+	}, this.poll_interval);
 }
 
 
